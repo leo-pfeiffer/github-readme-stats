@@ -37,11 +37,11 @@ module.exports = async (req, res) => {
   res.setHeader("Content-Type", "application/json");
 
   if (blacklist.includes(username)) {
-    return res.status(404).json({error: "Something went wrong"});
+    return res.json({error: "Something went wrong"});
   }
 
   if (locale && !isLocaleAvailable(locale)) {
-    return res.status(404).json({error: "Language not found"});
+    return res.json({error: "Language not found"});
   }
 
   try {
@@ -59,8 +59,8 @@ module.exports = async (req, res) => {
 
     res.setHeader("Cache-Control", `public, max-age=${cacheSeconds}`);
 
-    return res.status(200).json({stats: stats});
+    return res.json({stats: stats});
   } catch (err) {
-    return res.status(500).json({error: err.message});
+    return res.json({error: err.message});
   }
 };
