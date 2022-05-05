@@ -37,11 +37,11 @@ module.exports = async (req, res) => {
   res.setHeader("Content-Type", "image/svg+xml");
 
   if (blacklist.includes(username)) {
-    return res.send(renderError("Something went wrong"));
+    return res.json({error: "Something went wrong"});
   }
 
   if (locale && !isLocaleAvailable(locale)) {
-    return res.send(renderError("Something went wrong", "Language not found"));
+    return res.json({error: "Language not found"});
   }
 
   try {
@@ -59,8 +59,8 @@ module.exports = async (req, res) => {
 
     res.setHeader("Cache-Control", `public, max-age=${cacheSeconds}`);
 
-    return res.send({stats: stats});
+    return res.json({stats: stats});
   } catch (err) {
-    return res.send({error: err.message});
+    return res.json({error: err.message});
   }
 };
