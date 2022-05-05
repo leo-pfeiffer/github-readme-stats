@@ -34,14 +34,14 @@ module.exports = async (req, res) => {
     border_radius,
     border_color,
   } = req.query;
-  res.setHeader("Content-Type", "image/svg+xml");
+  res.setHeader("Content-Type", "application/json");
 
   if (blacklist.includes(username)) {
-    return res.json({error: "Something went wrong"});
+    return res.status(404).json({error: "Something went wrong"});
   }
 
   if (locale && !isLocaleAvailable(locale)) {
-    return res.json({error: "Language not found"});
+    return res.status(404).json({error: "Language not found"});
   }
 
   try {
@@ -61,6 +61,6 @@ module.exports = async (req, res) => {
 
     return res.status(200).json({stats: stats});
   } catch (err) {
-    return res.json({error: err.message});
+    return res.status(500).json({error: err.message});
   }
 };
