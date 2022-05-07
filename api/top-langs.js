@@ -47,6 +47,12 @@ module.exports = async (req, res) => {
       parseArray(exclude_repo),
     );
 
+    for (let lang of parseArray(hide)) {
+      if (lang in topLangs) {
+        delete topLangs[lang]
+      }
+    }
+
     const cacheSeconds = clampValue(
       parseInt(cache_seconds || CONSTANTS.TWO_HOURS, 10),
       CONSTANTS.TWO_HOURS,
