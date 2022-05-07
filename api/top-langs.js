@@ -31,14 +31,14 @@ module.exports = async (req, res) => {
     border_radius,
     border_color,
   } = req.query;
-  res.setHeader("Content-Type", "image/svg+xml");
+  res.setHeader("Content-Type", "application/json");
 
   if (blacklist.includes(username)) {
-    return res.send(renderError("Something went wrong"));
+      return res.json({error: "Something went wrong"});
   }
 
   if (locale && !isLocaleAvailable(locale)) {
-    return res.send(renderError("Something went wrong", "Locale not found"));
+      return res.json({error: "Locale not found"});
   }
 
   try {
@@ -55,25 +55,8 @@ module.exports = async (req, res) => {
 
     res.setHeader("Cache-Control", `public, max-age=${cacheSeconds}`);
 
-    return res.send(
-      renderTopLanguages(topLangs, {
-        custom_title,
-        hide_title: parseBoolean(hide_title),
-        hide_border: parseBoolean(hide_border),
-        card_width: parseInt(card_width, 10),
-        hide: parseArray(hide),
-        title_color,
-        text_color,
-        bg_color,
-        theme,
-        layout,
-        langs_count,
-        border_radius,
-        border_color,
-        locale: locale ? locale.toLowerCase() : null,
-      }),
-    );
+    return res.json({languages: topLangs});
   } catch (err) {
-    return res.send(renderError(err.message, err.secondaryMessage));
+      return res.json({error: err.message});
   }
 };

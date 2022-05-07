@@ -80,13 +80,14 @@ describe("Test /api/top-langs", () => {
     const res = {
       setHeader: jest.fn(),
       send: jest.fn(),
+      json: jest.fn()
     };
     mock.onPost("https://api.github.com/graphql").reply(200, data_langs);
 
     await topLangs(req, res);
 
-    expect(res.setHeader).toBeCalledWith("Content-Type", "image/svg+xml");
-    expect(res.send).toBeCalledWith(renderTopLanguages(langs));
+    expect(res.setHeader).toBeCalledWith("Content-Type", "application/json");
+    expect(res.json).toBeCalledWith({languages: langs});
   });
 
   it("should work with the query options", async () => {
@@ -104,22 +105,14 @@ describe("Test /api/top-langs", () => {
     const res = {
       setHeader: jest.fn(),
       send: jest.fn(),
+      json: jest.fn()
     };
     mock.onPost("https://api.github.com/graphql").reply(200, data_langs);
 
     await topLangs(req, res);
 
-    expect(res.setHeader).toBeCalledWith("Content-Type", "image/svg+xml");
-    expect(res.send).toBeCalledWith(
-      renderTopLanguages(langs, {
-        hide_title: true,
-        card_width: 100,
-        title_color: "fff",
-        icon_color: "fff",
-        text_color: "fff",
-        bg_color: "fff",
-      }),
-    );
+    expect(res.setHeader).toBeCalledWith("Content-Type", "application/json");
+    expect(res.json).toBeCalledWith({languages: langs});
   });
 
   it("should render error card on error", async () => {
@@ -131,12 +124,13 @@ describe("Test /api/top-langs", () => {
     const res = {
       setHeader: jest.fn(),
       send: jest.fn(),
+      json: jest.fn()
     };
     mock.onPost("https://api.github.com/graphql").reply(200, error);
 
     await topLangs(req, res);
 
-    expect(res.setHeader).toBeCalledWith("Content-Type", "image/svg+xml");
-    expect(res.send).toBeCalledWith(renderError(error.errors[0].message));
+    expect(res.setHeader).toBeCalledWith("Content-Type", "application/json");
+    expect(res.json).toBeCalledWith({error: error.errors[0].message});
   });
 });
