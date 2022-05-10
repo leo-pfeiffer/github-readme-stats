@@ -370,6 +370,27 @@ function parseEmojis(str) {
   });
 }
 
+const removeHiddenLangs = function(topLangs, hide) {
+  let langs = Object.values(topLangs);
+  let hiddenRemoved = {};
+  let langsToHide = {};
+
+  // while filtering out
+  if (hide) {
+    hide.forEach((langName) => {
+      langsToHide[lowercaseTrim(langName)] = true;
+    });
+  }
+
+  // filter out languages to be hidden
+  langs.sort((a, b) => b.size - a.size)
+      .filter((lang) => {
+        return !langsToHide[lowercaseTrim(lang.name)];
+      })
+      .forEach(e => hiddenRemoved[e.name] = e)
+  return hiddenRemoved
+}
+
 module.exports = {
   renderError,
   kFormatter,
@@ -391,4 +412,5 @@ module.exports = {
   lowercaseTrim,
   chunkArray,
   parseEmojis,
+  removeHiddenLangs
 };

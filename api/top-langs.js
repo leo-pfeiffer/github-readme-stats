@@ -1,10 +1,9 @@
 require("dotenv").config();
 const {
-  renderError,
   clampValue,
-  parseBoolean,
   parseArray,
   CONSTANTS,
+  removeHiddenLangs,
 } = require("../src/common/utils");
 const fetchTopLanguages = require("../src/fetchers/top-languages-fetcher");
 const renderTopLanguages = require("../src/cards/top-languages-card");
@@ -47,11 +46,7 @@ module.exports = async (req, res) => {
       parseArray(exclude_repo),
     );
 
-    for (let lang of parseArray(hide)) {
-      if (lang in topLangs) {
-        delete topLangs[lang]
-      }
-    }
+    const langs = removeHiddenLangs(topLangs, parseArray(hide))
 
     const cacheSeconds = clampValue(
       parseInt(cache_seconds || CONSTANTS.TWO_HOURS, 10),
@@ -61,7 +56,7 @@ module.exports = async (req, res) => {
 
     res.setHeader("Cache-Control", `public, max-age=${cacheSeconds}`);
 
-    return res.json({languages: topLangs});
+    return res.json({languages: langs});
   } catch (err) {
       return res.json({error: err.message});
   }

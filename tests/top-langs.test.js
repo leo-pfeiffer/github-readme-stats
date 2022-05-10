@@ -2,8 +2,7 @@ require("@testing-library/jest-dom");
 const axios = require("axios");
 const MockAdapter = require("axios-mock-adapter");
 const topLangs = require("../api/top-langs");
-const renderTopLanguages = require("../src/cards/top-languages-card");
-const { renderError } = require("../src/common/utils");
+const {removeHiddenLangs} = require("../src/common/utils");
 
 const data_langs = {
   data: {
@@ -85,9 +84,10 @@ describe("Test /api/top-langs", () => {
     mock.onPost("https://api.github.com/graphql").reply(200, data_langs);
 
     await topLangs(req, res);
+    const hiddenRemoved = removeHiddenLangs(langs, [])
 
     expect(res.setHeader).toBeCalledWith("Content-Type", "application/json");
-    expect(res.json).toBeCalledWith({languages: langs});
+    expect(res.json).toBeCalledWith({languages: hiddenRemoved});
   });
 
   it("should work with the query options", async () => {
